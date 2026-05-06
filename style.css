@@ -1,30 +1,45 @@
 body {
     margin: 0;
-    padding: 0;
-    overflow: hidden; /* Removes scrollbars */
-    background-color: #000; /* Prevents white flicker on load */
+    overflow: hidden;
+    background-color: #000;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-canvas {
-    display: block;
-    width: 100vw;
-    height: 100vh;
+#ui-container {
+    position: absolute;
+    text-align: center;
+    z-index: 10;
+    font-family: 'Arial Black', sans-serif;
+    color: white;
+    pointer-events: none; /* Allows clicks to pass through to button */
 }
 
-/* Style for the 'Play' button we created in script.js */
-button {
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    background: #ff00ff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    z-index: 10;
-    font-family: 'Courier New', Courier, monospace;
+#song-title {
+    font-size: 4rem;
+    letter-spacing: 12px;
+    margin-bottom: 30px;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    box-shadow: 0 0 15px #ff00ff;
+    /* Neon glow effect */
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+    opacity: 0.9;
+}
+
+button {
+    pointer-events: auto; /* Makes button clickable again */
+    padding: 15px 50px;
+    background: transparent;
+    border: 3px solid #00ffff;
+    color: #00ffff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    letter-spacing: 3px;
+}
+
+button:hover {
+    background: #00ffff;
+    color: black;
+    box-shadow: 0 0 30px #00ffff;
 }
