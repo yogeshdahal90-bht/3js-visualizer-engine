@@ -40,7 +40,7 @@ function init() {
 }
 
 function setupAudio() {
-    const audio = new Audio('assets/your-song.mp3'); // Put your file path here!
+    const audio = new Audio('assets/Katy Perry - The One That Got Away (Official Music Video).mp3'); // Put your file path here!
     audio.play();
 
     const ctx = new AudioContext();
