@@ -1,4 +1,35 @@
-<div id="ui-container">
-    <h1 id="song-title">THE ONE THAT GOT AWAY</h1>
-    <button id="play-btn">START EXPERIENCE</button>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3js Visualizer - The One That Got Away</title>
+    
+    <!-- This stylesheet link ensures your CSS is applied -->
+    <link rel="stylesheet" href="./style.css">
+
+    <!-- The Import Map tells the browser how to find Three.js inside your script.js -->
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://unpkg.com/three@0.136.0/build/three.module.js"
+          }
+        }
+    </script>
+</head>
+<body>
+
+    <!-- UI Container: This is your "Heads Up Display" for the music video -->
+    <div id="ui-container">
+        <!-- The song title: Now positioned safely at the bottom -->
+        <h1 id="song-title">THE ONE THAT GOT AWAY</h1>
+        
+        <!-- The interaction button: Required by browsers to play audio -->
+        <button id="play-btn">START EXPERIENCE</button>
+    </div>
+
+    <!-- The Brain: This loads your 3D robot and the music logic -->
+    <script type="module" src="./script.js"></script>
+
+</body>
+</html>
