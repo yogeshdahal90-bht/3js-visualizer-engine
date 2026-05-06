@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 
 let scene, camera, renderer, analyser, dataArray;
 let leftLeg, rightLeg, floor;
