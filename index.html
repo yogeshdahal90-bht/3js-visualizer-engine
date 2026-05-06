@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3js Visualizer Engine</title>
+    <title>3js Visualizer - The One That Got Away</title>
+    <!-- The Import Map is essential for the Three.js module to load -->
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://unpkg.com/three@0.136.0/build/three.module.js"
+          }
+        }
+    </script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="ui-container">
-        <!-- CHANGE YOUR SONG NAME HERE -->
-        <h1 id="song-title">VAPORWAVE DREAMS</h1> 
+        <h1 id="song-title">THE ONE THAT GOT AWAY</h1>
         <button id="play-btn">START EXPERIENCE</button>
     </div>
     <script type="module" src="script.js"></script>
