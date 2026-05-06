@@ -1,46 +1,60 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
 
-let scene, camera, renderer, terrain, analyser, dataArray;
+let scene, camera, renderer, analyser, dataArray;
+let bars = [];
+const BAR_COUNT = 32;
+
+let particleSystem;
+const PARTICLE_COUNT = 1500; // Increased for better "Rain" effect
 
 function init() {
-    // 1. THE STAGE
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x050505); // Deep black/purple
-
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 5, 20);
+    camera.position.set(0, 5, 25);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // 2. THE LANDSCAPE (The "Geometry")
-    const geometry = new THREE.PlaneGeometry(100, 100, 64, 64);
-    const material = new THREE.MeshBasicMaterial({ 
-        color: 0xff00ff, // Neon Pink
-        wireframe: true 
-    });
-    terrain = new THREE.Mesh(geometry, material);
-    terrain.rotation.x = -Math.PI / 2;
-    scene.add(terrain);
+    // 1. Create Equalizer Bars
+    for (let i = 0; i < BAR_COUNT; i++) {
+        const geometry = new THREE.BoxGeometry(0.8, 1, 0.8);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+        const bar = new THREE.Mesh(geometry, material);
+        
+        bar.position.x = (i - BAR_COUNT / 2) * 1.5; 
+        scene.add(bar);
+        bars.push(bar);
+    }
 
-    // 3. START BUTTON (Browser Requirement)
-    const btn = document.createElement('button');
-    btn.innerHTML = "Play Visualizer";
-    btn.style.position = 'absolute';
-    btn.style.top = '20px';
-    document.body.appendChild(btn);
+    // 2. Create Particle Rain
+    const particleGeometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(PARTICLE_COUNT * 3);
 
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 100; // X (Width)
+        positions[i * 3 + 1] = Math.random() * 50;      // Y (Height)
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 20; // Z (Depth)
+    }
+
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const particleMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 });
+    particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+    scene.add(particleSystem);
+
+    const btn = document.getElementById('play-btn');
     btn.addEventListener('click', () => {
         setupAudio();
-        btn.remove();
+        btn.style.display = 'none';
     });
 
     animate();
 }
 
 function setupAudio() {
-    const audio = new Audio('assets/Katy Perry - The One That Got Away (Official Music Video).mp3'); // Put your file path here!
+    // !!! CHANGE THIS TO YOUR EXACT FILENAME !!!
+    const audio = new Audio('assets/Katy Perry - The One That Got Away (Official Music Video).mp3'); 
+    audio.crossOrigin = "anonymous";
     audio.play();
 
     const ctx = new AudioContext();
@@ -49,9 +63,8 @@ function setupAudio() {
     source.connect(analyser);
     analyser.connect(ctx.destination);
 
-    analyser.fftSize = 512;
-    const bufferLength = analyser.frequencyBinCount;
-    dataArray = new Uint8Array(bufferLength);
+    analyser.fftSize = 128;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
 }
 
 function animate() {
@@ -60,16 +73,21 @@ function animate() {
     if (analyser) {
         analyser.getByteFrequencyData(dataArray);
 
-        // This is the "Magic": Manipulating the grid with music
-        const positions = terrain.geometry.attributes.position.array;
-        
-        for (let i = 0; i < positions.length; i += 3) {
-            // We use the audio data to move the Z-height of each point
-            // dataArray[i % 128] links specific notes to grid points
-            const bounce = dataArray[i % 128] / 10; 
-            positions[i + 2] = bounce * Math.sin(i + Date.now() * 0.001);
+        // Update Bars
+        for (let i = 0; i < bars.length; i++) {
+            const scale = dataArray[i] * 0.15 + 1; // 0.15 makes it a bit more reactive
+            bars[i].scale.y = scale;
+            bars[i].position.y = scale / 2;
+            bars[i].material.color.setHSL(i / BAR_COUNT, 1, 0.5);
         }
-        terrain.geometry.attributes.position.needsUpdate = true;
+
+        // Update Particle Rain
+        const positions = particleSystem.geometry.attributes.position.array;
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            positions[i * 3 + 1] -= 0.1; // Speed of rain
+            if (positions[i * 3 + 1] < -10) positions[i * 3 + 1] = 50; // Reset
+        }
+        particleSystem.geometry.attributes.position.needsUpdate = true;
     }
 
     renderer.render(scene, camera);
