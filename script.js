@@ -77,7 +77,7 @@ function init() {
 
 function setupAudio() {
     // Exact filename matching your assets folder
-    const audio = new Audio('assets/Katy Perry - The One That Got Away (Official Music Video).mp3');
+    const audio = new Audio('assets/music.mp3');
     audio.crossOrigin = "anonymous";
     audio.play();
 
