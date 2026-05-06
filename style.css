@@ -1,53 +1,36 @@
-body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden; /* Stops the page from wobbling */
-    background-color: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100vw;
-}
-
 #ui-container {
     position: absolute;
-    text-align: center;
+    bottom: 50px; /* Moves everything 50px up from the bottom */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     z-index: 10;
     font-family: 'Arial Black', Gadget, sans-serif;
     color: white;
-    pointer-events: none; /* Let's you click through the text to the button */
+    pointer-events: none;
 }
 
 #song-title {
-    font-size: clamp(2rem, 8vw, 4rem); /* Responsive size */
-    letter-spacing: 10px;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff; /* Dual glow */
+    font-size: 1.5rem; /* Smaller, more sophisticated size */
+    letter-spacing: 5px;
+    margin-bottom: 15px; /* Space between title and button */
+    text-shadow: 0 0 10px #00ffff;
     opacity: 0.8;
-    transition: opacity 2s ease;
+    text-transform: uppercase;
 }
 
 button {
     pointer-events: auto;
-    padding: 15px 40px;
+    padding: 10px 30px;
     background: transparent;
     border: 2px solid #00ffff;
     color: #00ffff;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: bold;
     cursor: pointer;
     text-transform: uppercase;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     transition: all 0.3s ease;
-}
-
-button:hover {
-    background: #00ffff;
-    color: #000;
-    box-shadow: 0 0 20px #00ffff;
-}
-
-canvas {
-    display: block;
 }
