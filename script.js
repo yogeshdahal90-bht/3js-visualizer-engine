@@ -1,4 +1,4 @@
-import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
+import * as THREE from 'three';
 
 let scene, camera, renderer, analyser, dataArray;
 let leftLeg, rightLeg, floor;
@@ -9,7 +9,7 @@ function init() {
     // 1. SCENE SETUP
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x050505);
-    scene.fog = new THREE.Fog(0x000000, 5, 40); // Fog creates the "fading into memory" look
+    scene.fog = new THREE.Fog(0x000000, 5, 40);
 
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 4, 12);
@@ -19,20 +19,17 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // 2. THE BOX BOT (Simple but effective)
+    // 2. THE BOX BOT
     const botMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true });
     
-    // Torso
     const torso = new THREE.Mesh(new THREE.BoxGeometry(1, 1.5, 1), botMat);
     torso.position.y = 3;
     scene.add(torso);
 
-    // Head
     const head = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), botMat);
     head.position.y = 4.2;
     scene.add(head);
 
-    // Legs
     const legGeo = new THREE.BoxGeometry(0.4, 1.8, 0.4);
     leftLeg = new THREE.Mesh(legGeo, botMat);
     leftLeg.position.set(-0.3, 1.5, 0);
@@ -49,36 +46,44 @@ function init() {
     floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
 
-    // 4. FLOATING MEMORIES (The Obstacles)
+    // 4. FLOATING MEMORIES (Obstacles)
     for (let i = 0; i < 15; i++) {
         const obsGeo = new THREE.BoxGeometry(Math.random() * 2, Math.random() * 8, 0.5);
         const obs = new THREE.Mesh(obsGeo, botMat);
         obs.position.set(
-            Math.random() > 0.5 ? 8 : -8, // Side of the path
+            Math.random() > 0.5 ? 8 : -8,
             obs.geometry.parameters.height / 2, 
-            -Math.random() * 60 // Scattered in the distance
+            -Math.random() * 60 
         );
         scene.add(obs);
         obstacles.push(obs);
     }
 
-    // 5. INTERACTION HOOK
-    const btn = document.getElementById('play-btn');
-    btn.addEventListener('click', () => {
-        setupAudio();
-        btn.style.display = 'none';
-        // Make title slightly transparent after clicking
-        document.getElementById('song-title').style.opacity = "0.3";
+    // 5. FILE UPLOAD LOGIC
+    const fileInput = document.getElementById('upload');
+    const uploadLabel = document.querySelector('.custom-upload');
+
+    fileInput.addEventListener('change', (event) => {
+        const files = event.target.files;
+        if (files.length > 0) {
+            setupAudio(files[0]);
+            
+            // UI Feedback
+            uploadLabel.style.display = 'none';
+            const fileName = files[0].name.replace(/\.[^/.]+$/, "");
+            document.getElementById('song-title').innerText = fileName;
+            document.getElementById('song-title').style.opacity = "0.3";
+        }
     });
 
     window.addEventListener('resize', onWindowResize, false);
     animate();
 }
 
-function setupAudio() {
-    // Exact filename matching your assets folder
-    const audio = new Audio('assets/music.mp3');
-    audio.crossOrigin = "anonymous";
+function setupAudio(file) {
+    // Create a URL for the uploaded file
+    const audioURL = URL.createObjectURL(file);
+    const audio = new Audio(audioURL);
     audio.play();
 
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -95,32 +100,30 @@ function animate() {
     requestAnimationFrame(animate);
     const elapsed = clock.getElapsedTime();
 
-    // LEG ANIMATION (Walking Speed)
-    // 0.8 is the stride length, 4 is the speed of the steps
+    // Walking animation
     leftLeg.rotation.x = Math.sin(elapsed * 4) * 0.8;
     rightLeg.rotation.x = Math.cos(elapsed * 4) * 0.8;
 
-    // FLOOR SCROLL (Creates the movement illusion)
+    // Floor scroll
     floor.position.z += 0.15;
     if (floor.position.z > 5) floor.position.z = 0;
 
-    // OBSTACLE MOVEMENT
+    // Obstacles
     obstacles.forEach(obs => {
         obs.position.z += 0.15;
         if (obs.position.z > 15) {
-            obs.position.z = -50; // Send back to the start of the horizon
+            obs.position.z = -50;
         }
     });
 
-    // AUDIO REACTIVITY
+    // Audio reactivity
     if (analyser) {
         analyser.getByteFrequencyData(dataArray);
-        const bass = dataArray[2] / 255; // Reacting to low-end rhythm
+        const bass = dataArray[2] / 255; 
         
-        // Make the bot grow slightly with the beat
         scene.children.forEach(child => {
             if (child.isMesh && child !== floor) {
-                const s = 1 + bass * 0.2;
+                const s = 1 + bass * 0.25; // Scale up based on bass
                 child.scale.set(s, s, s);
             }
         });
