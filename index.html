@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3js Visualizer - Upload Edition</title>
-    <link rel="stylesheet" href="./style.css">
+    <title>3js Visualizer - Live Upload</title>
+    
+    <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="style.css">
 
+    <!-- The Import Map allows your script.js to find Three.js from a CDN -->
     <script type="importmap">
         {
           "imports": {
@@ -16,15 +19,17 @@
 </head>
 <body>
 
+    <!-- UI Overlay for interaction -->
     <div id="ui-container">
         <h1 id="song-title">3JS VISUALIZER</h1>
         
-        <!-- The Label acts as our styled button -->
+        <!-- We use a label for the file input to create a custom styled button -->
         <label for="upload" class="custom-upload">CHOOSE YOUR TRACK</label>
         <input type="file" id="upload" accept="audio/*">
     </div>
 
-    <script type="module" src="./script.js"></script>
+    <!-- Your logic file -->
+    <script type="module" src="script.js"></script>
 
 </body>
 </html>
