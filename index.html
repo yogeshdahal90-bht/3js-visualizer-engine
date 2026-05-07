@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3js Visualizer - The One That Got Away</title>
-    
-    <!-- This stylesheet link ensures your CSS is applied -->
+    <title>3js Visualizer - Upload Edition</title>
     <link rel="stylesheet" href="./style.css">
 
-    <!-- The Import Map tells the browser how to find Three.js inside your script.js -->
     <script type="importmap">
         {
           "imports": {
@@ -19,16 +16,14 @@
 </head>
 <body>
 
-    <!-- UI Container: This is your "Heads Up Display" for the music video -->
     <div id="ui-container">
-        <!-- The song title: Now positioned safely at the bottom -->
-        <h1 id="song-title">THE ONE THAT GOT AWAY</h1>
+        <h1 id="song-title">3JS VISUALIZER</h1>
         
-        <!-- The interaction button: Required by browsers to play audio -->
-        <button id="play-btn">START EXPERIENCE</button>
+        <!-- The Label acts as our styled button -->
+        <label for="upload" class="custom-upload">CHOOSE YOUR TRACK</label>
+        <input type="file" id="upload" accept="audio/*">
     </div>
 
-    <!-- The Brain: This loads your 3D robot and the music logic -->
     <script type="module" src="./script.js"></script>
 
 </body>
